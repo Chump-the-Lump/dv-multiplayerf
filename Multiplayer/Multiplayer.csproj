@@ -15,7 +15,7 @@
         <Publicize Include="DV.CharacterController" IncludeCompilerGeneratedMembers="false" />
         <Publicize Include="DV.RailTrack" IncludeCompilerGeneratedMembers="false" />
         <Publicize Include="DV.Simulation" IncludeCompilerGeneratedMembers="false" />
-        <Publicize Include="DV.Steam" IncludeCompilerGeneratedMembers="false" />
+        <Publicize Include="DV.Platform.Steam" IncludeCompilerGeneratedMembers="false" />
         <Publicize Include="DV.Utils:DV.Utils.SingletonBehaviour`1._instance" />
         <Publicize Include="DV.UI" IncludeCompilerGeneratedMembers="false" />
         <Publicize Include="Facepunch.Steamworks.Win64" IncludeCompilerGeneratedMembers="false" />
@@ -40,7 +40,7 @@
         <Reference Include="DV.RailTrack" />
         <Reference Include="DV.Scenarios.CRUD" />
         <Reference Include="DV.Simulation" />
-        <Reference Include="DV.Steam" />
+        <Reference Include="DV.Platform.Steam" />
         <Reference Include="DV.Telemetry" />
         <Reference Include="DV.TerrainSystem" />
         <Reference Include="DV.TerrainTools" />
