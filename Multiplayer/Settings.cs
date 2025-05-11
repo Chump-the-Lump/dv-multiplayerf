@@ -20,13 +20,18 @@ public class Settings : UnityModManager.ModSettings, IDrawable
     public int SettingsVer = CURRENT_VERSION;
 
     [Header("Player")]
-    [Draw("Use Steam Name", Tooltip = "Use your Steam name as your username in-game")]
+    [Draw("Use Steam Name", Tooltip = "Use your Steam name as your username in-game.")]
     public bool UseSteamName = true;
     public string LastSteamName = string.Empty;
     public ulong SteamId = 0;
-    [Draw("Username", Tooltip = "Your username in-game", VisibleOn = "UseSteamName|false")]
+    [Draw("Username", Tooltip = "Your username in-game.", VisibleOn = "UseSteamName|false")]
     public string Username = "Player";
     public string Guid = System.Guid.NewGuid().ToString();
+
+    [Space(10)]
+    [Header("Misc.")]
+    [Draw("Chat Key Bind", Tooltip ="Key to show chat window.")]
+    public KeyCode ChatKey = KeyCode.Return;
 
     [Space(10)]
     [Header("Server")]
@@ -41,14 +46,14 @@ public class Settings : UnityModManager.ModSettings, IDrawable
     public int MaxPlayers = 4;
     [Draw("Port", Tooltip = "The port that your server will listen on. You generally don't need to change this.")]
     public int Port = 7777;
-    [Draw("Details", Tooltip = "Details shown in the server browser")]
+    [Draw("Details", Tooltip = "Details shown in the server browser.")]
     public string Details = "";
 
     [Space(10)]
     [Header("Lobby Server")]
-    [Draw("Lobby Server address", Tooltip = "Address of lobby server for finding multiplayer games")]
+    [Draw("Lobby Server address", Tooltip = "Address of lobby server for finding multiplayer games.")]
     public string LobbyServerAddress = "https://dv.mineit.space";
-    [Draw("IPv4 Check Address", Tooltip = "Do not modify unless the service is unavailable")]
+    [Draw("IPv4 Check Address", Tooltip = "Do not modify unless the service is unavailable.")]
     public string Ipv4AddressCheck = "https://api.ipify.org/";
     [Header("Last Server Connected to by IP")]
     [Draw("Last Remote IP", Tooltip = "The IP for the last server connected to by IP.")]
@@ -71,7 +76,7 @@ public class Settings : UnityModManager.ModSettings, IDrawable
     public bool ShowAdvancedSettings;
     [Draw("Show Stats", Tooltip = "Whether to show network statistics.", VisibleOn = "ShowAdvancedSettings|true")]
     public bool ShowStats;
-    [Draw("Stats List Size", Tooltip = "How many packets to list in the network statistics gui.", VisibleOn = "ShowStats|true")]
+    [Draw("Stats List Size", Tooltip = "How many packets to list in the network statistics GUI.", VisibleOn = "ShowStats|true")]
     public int StatsListSize = 3;
     [Draw("Debug Logging", Tooltip = "Whether to log extra information. This is useful for debugging, but should otherwise be kept off.", VisibleOn = "ShowAdvancedSettings|true")]
     public bool DebugLogging;
@@ -108,9 +113,13 @@ public class Settings : UnityModManager.ModSettings, IDrawable
     {
         LastSteamName = LastSteamName.Trim().Truncate(MAX_USERNAME_LENGTH);
         Username = Username.Trim().Truncate(MAX_USERNAME_LENGTH);
+
         Port = Mathf.Clamp(Port, 1024, 49151);
         MaxPlayers = Mathf.Clamp(MaxPlayers, 1, byte.MaxValue);
         Password = Password?.Trim();
+
+        ChatKey = ChatKey == KeyCode.None ? KeyCode.Return : ChatKey;
+
         if (!UnloadWatcher.isQuitting)
             OnSettingsUpdated?.Invoke(this);
         Save(this, modEntry);

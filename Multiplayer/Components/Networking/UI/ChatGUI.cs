@@ -36,8 +36,8 @@ public class ChatGUI : MonoBehaviour
 
     private GameObject messagePrefab;
 
-    private List<GameObject> messageList = new List<GameObject>();
-    private List<string> sendHistory = new List<string>();
+    private readonly List<GameObject> messageList = new List<GameObject>();
+    private readonly List<string> sendHistory = new List<string>();
 
     private TMP_InputField chatInputIF;
     private ScrollRect scrollRect;
@@ -63,7 +63,7 @@ public class ChatGUI : MonoBehaviour
 
     private GameFeatureFlags.Flag denied;
 
-    private void Awake()
+    protected void Awake()
     {
         Multiplayer.Log("ChatGUI Awake() called");
 
@@ -93,23 +93,23 @@ public class ChatGUI : MonoBehaviour
 
     }
 
-    private void OnEnable()
+    protected void OnEnable()
     {
         chatInputIF.onSubmit.AddListener(Submit);
         chatInputIF.onValueChanged.AddListener(ChatInputChange);
         
     }
 
-    private void OnDisable()
+    protected void OnDisable()
     {
         chatInputIF.onSubmit.RemoveAllListeners();
         chatInputIF.onValueChanged.RemoveAllListeners();
     }
 
-    private void Update()
+    protected void Update()
     {
         //Handle keypresses to open/close the chat window
-        if (!isOpen && Input.GetKeyDown(KeyCode.Return) && !AppUtil.Instance.IsPauseMenuOpen)
+        if (!isOpen && Input.GetKeyDown(Multiplayer.Settings.ChatKey) && !AppUtil.Instance.IsPauseMenuOpen)
         {
             isOpen = true;              //whole panel is open
             showingMessage = false;     //We don't want to time out

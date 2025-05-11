@@ -342,6 +342,7 @@ namespace Multiplayer.Components.MainMenu
 
             //Don't forget to re-enable!
             GridviewGO.SetActive(true);
+            serverGridView.Clear();
         }
         private void SetupListeners(bool on)
         {
