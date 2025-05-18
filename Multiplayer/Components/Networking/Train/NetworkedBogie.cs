@@ -9,6 +9,7 @@ public class NetworkedBogie : TickedQueue<BogieData>
 {
     private const int MAX_FRAMES = 60;
     public Bogie Bogie { get; private set; }
+    private Rigidbody rb;
 
     protected override void OnEnable()
     {
@@ -19,10 +20,15 @@ public class NetworkedBogie : TickedQueue<BogieData>
     {
         int counter = 0;
 
-        while (Bogie == null && counter < MAX_FRAMES)
+        while (Bogie == null || rb == null && counter < MAX_FRAMES)
         {
-            Bogie = GetComponent<Bogie>();
             if (Bogie == null)
+                Bogie = GetComponent<Bogie>();
+
+            if (rb == null)
+                rb = GetComponent<Rigidbody>();
+
+            if (rb == null || Bogie == null)
             {
                 counter++;
                 yield return new WaitForEndOfFrame();
@@ -35,6 +41,11 @@ public class NetworkedBogie : TickedQueue<BogieData>
         {
             Multiplayer.LogError($"{gameObject.name} ({Bogie?.Car?.ID}): {nameof(NetworkedBogie)} requires a {nameof(Bogie)} component on the same GameObject! Waited {counter} iterations");
         }
+
+        if (rb == null)
+        {
+            Multiplayer.LogError($"{gameObject.name} ({Bogie?.Car?.ID}): {nameof(NetworkedBogie)} requires a {nameof(rb)} component on the same GameObject! Waited {counter} iterations");
+        }
     }
 
     protected override void Process(BogieData snapshot, uint snapshotTick)
@@ -42,7 +53,7 @@ public class NetworkedBogie : TickedQueue<BogieData>
 
         //Multiplayer.LogDebug(()=>$"NetworkedBogie.Process({identifier}) DataFlags: {snapshot.DataFlags}, {snapshotTick}, {snapshot.TrackNetId}, {snapshot.PositionAlongTrack} {snapshot.TrackDirection}");
 
-        if (Bogie.HasDerailed)
+        if (Bogie == null || rb == null || Bogie.HasDerailed)
             return;
 
         if (snapshot.HasDerailed)
@@ -74,6 +85,9 @@ public class NetworkedBogie : TickedQueue<BogieData>
 
         int physicsSteps = Mathf.FloorToInt((NetworkLifecycle.Instance.Tick - (float)snapshotTick) / NetworkLifecycle.TICK_RATE / Time.fixedDeltaTime) + 1;
         for (int i = 0; i < physicsSteps; i++)
-            Bogie.UpdatePointSetTraveller();
+        {
+            var z = transform.InverseTransformDirection(rb.velocity).z;
+            Bogie.UpdatePointSetTraveller(z);
+        }
     }
 }

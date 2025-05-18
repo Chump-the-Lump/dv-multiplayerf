@@ -21,7 +21,7 @@ public static class CarSpawner_Patch
 
         networkedTrainCar.IsDestroying = true;
 
-        NetworkLifecycle.Instance.Server?.SendDestroyTrainCar(networkedTrainCar.NetId);
+        NetworkLifecycle.Instance.Server?.SendDestroyTrainCar(networkedTrainCar);
     }
 
     //Called from 

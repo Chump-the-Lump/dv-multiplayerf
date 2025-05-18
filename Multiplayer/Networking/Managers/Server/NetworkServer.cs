@@ -339,18 +339,18 @@ public class NetworkServer : NetworkManager
         SendPacketToAll(ClientboundSpawnTrainCarPacket.FromTrainCar(networkedTrainCar), DeliveryMethod.ReliableOrdered, SelfPeer);
     }
 
-    public void SendDestroyTrainCar(ushort netId, ITransportPeer peer = null)
+    public void SendDestroyTrainCar(NetworkedTrainCar netTrainCar, ITransportPeer peer = null)
     {
         //ushort netID = trainCar.GetNetId();
-        LogDebug(() => $"SendDestroyTrainCar({netId})");
+        Log($"Sending DestroyTrainCarPacket for [{netTrainCar.CurrentID} {netTrainCar.NetId}]");
 
-        if (netId == 0)
+        if (netTrainCar.NetId == 0)
         {
-            Multiplayer.LogWarning($"SendDestroyTrainCar failed. netId {netId}");
+            Multiplayer.LogWarning($"SendDestroyTrainCar failed. [{netTrainCar.CurrentID} {netTrainCar.NetId}]");
             return;
         }
 
-        var packet = new ClientboundDestroyTrainCarPacket{ NetId = netId };
+        var packet = new ClientboundDestroyTrainCarPacket{ NetId = netTrainCar.NetId };
 
         if (peer == null)
             SendPacketToAll(packet, DeliveryMethod.ReliableOrdered, SelfPeer);
@@ -881,7 +881,7 @@ public class NetworkServer : NetworkManager
         {
             Multiplayer.LogDebug(() => $"OnCommonCouplerInteractionPacket([{packet.Flags}, {netTrainCar.CurrentID}, {packet.NetId}], {peer.Id}) Sending destroy");
             //Car doesn't exist, tell client to delete it
-            SendDestroyTrainCar(packet.NetId, peer);
+            SendDestroyTrainCar(netTrainCar, peer);
         }
         
     }
